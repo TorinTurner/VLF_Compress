@@ -1,5 +1,8 @@
 # VLF Compress
 
+![Build Status](https://github.com/TorinTurner/VLF_Compress/workflows/Build%20Windows%20x64/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A portable Windows x64 application for file compression and decompression using Brotli compression and Base32 encoding, designed for Very Low Frequency (VLF) communication.
 
 ## Features
@@ -31,8 +34,14 @@ Decompress received files back to original format with statistics.
 
 ### Download
 
-Download the latest installer:
-- **VLF Compress Setup 1.0.0.exe** (~50-100 MB)
+**Latest Release:**
+- Download from [GitHub Releases](https://github.com/TorinTurner/VLF_Compress/releases/latest)
+- **VLF Compress Setup x.x.x.exe** (~50-100 MB)
+
+**Development Builds:**
+- Automated builds are available from the [Actions](https://github.com/TorinTurner/VLF_Compress/actions) tab
+- Built automatically on every push to `main` and feature branches
+- Download artifacts for testing pre-release versions
 
 ### Install
 
