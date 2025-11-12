@@ -1,0 +1,59 @@
+import base64
+import brotli
+
+input_file = "C:/Users/Panasonic/Desktop/Compression/original_msg.txt"  # Replace with the path to your input file
+compressed_file = "C:/Users/Panasonic/Desktop/Compression/compressed_brotli.txt"  # File to store the compressed data before encoding
+encoded_file = "C:/Users/Panasonic/Desktop/Compression/encoded.txt"  # File to store the encoded Base64 data
+#encoded_file_clean = "G:/Codes/encoded_clean.txt"  # File to store a file with ==== vs #### at end of file
+output_file = "C:/Users/Panasonic/Desktop/Compression/decompressed.txt"  # File to store the decompressed data
+incompatible_symbol = '#' 
+compatible_symbol = '='
+
+def replace_characters_in_file(encoded_file, incompatible_symbol, compatible_symbol):
+    try:
+        # Open the file in read mode
+        with open(encoded_file, 'r') as file:
+            text = file.read()
+        
+        # Replace the old character with the new character
+        updated_text = text.replace(incompatible_symbol, compatible_symbol)
+
+        # Open the file in write mode to save the changes
+        with open(encoded_file, 'w') as file:
+            file.write(updated_text)
+
+        print(f"Replaced '{incompatible_symbol}' with '{compatible_symbol}' in the file.")
+    except FileNotFoundError:
+        print(f"The file at {encoded_file} was not found.")
+
+
+def decode_and_decompress(encoded_file, output_file):
+    # Read the encoded data from the file
+    with open(encoded_file, 'r') as file:
+        encoded_data = file.read()
+
+    # Decode the Base64 encoded data
+    compressed_data =base64.b32decode(encoded_data) 
+
+    decompressed_data = brotli.decompress(compressed_data)
+
+    # Write the decompressed data to the output file
+    with open(output_file, 'wb') as file:
+        file.write(decompressed_data)
+
+    with open(output_file, 'r') as file:
+        text = file.read()
+        # Get the number of characters
+        num_characters = len(text)
+
+    print(f"The number of characters in the file is: {num_characters}")
+    print(f"Decoded and decompressed data written to '{output_file}'.")
+
+
+# Example usage:
+
+
+# Compress, encode, decode, and decompress
+replace_characters_in_file(encoded_file, incompatible_symbol, compatible_symbol)
+decode_and_decompress(encoded_file, output_file)
+

@@ -1,0 +1,33 @@
+import base64
+import brotli
+
+input_file = "C:/Users/Panasonic/Desktop/Compression/original_msg.txt"  # Replace with the path to your input file
+encoded_file = "C:/Users/Panasonic/Desktop/Compression/encoded.txt"  # File to store the encoded Base64 data
+output_file = "C:/Users/Panasonic/Desktop/Compression/decompressed.txt"  # File to store the decompressed data
+incompatible_symbol = '#' 
+compatible_symbol = '='
+
+def compress_and_encode(input_file, encoded_file):
+    # Read the original file
+    with open(input_file, 'rb') as file:
+        data = file.read()
+
+    compressed_data = brotli.compress(data)
+  
+    # Encode the compressed data in Base64 (ASCII)
+    encoded_data = base64.b32encode(compressed_data).decode('ASCII')
+
+    # Write the encoded ASCII string to an output file
+    with open(encoded_file, 'w') as file:
+        file.write(encoded_data)
+
+    with open(encoded_file, 'r') as file:
+        text = file.read()
+        # Get the number of characters
+        num_characters = len(text)
+        
+    print(f"The number of characters in the encoded file is: {num_characters}")
+    print(f"File '{input_file}' compressed and encoded as Base32 in '{encoded_file}'.")
+
+# Compress, encode, decode, and decompress
+compress_and_encode(input_file, encoded_file)
