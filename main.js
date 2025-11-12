@@ -37,18 +37,36 @@ function getPythonExecutablePath() {
 async function executePython(command, args = []) {
   return new Promise((resolve, reject) => {
     const pythonPath = getPythonExecutablePath();
+
+    // Validate that the executable exists in production
+    if (!isDev) {
+      if (!fs.existsSync(pythonPath)) {
+        const errorMsg = `Python executable not found at: ${pythonPath}`;
+        console.error(errorMsg);
+        reject(new Error(errorMsg));
+        return;
+      }
+    }
+
     const fullArgs = [command, ...args, '--json'];
 
     console.log(`Executing: ${pythonPath} ${fullArgs.join(' ')}`);
 
-    const pythonProcess = spawn(pythonPath, fullArgs, {
-      cwd: path.dirname(pythonPath),
+    // Set up spawn options
+    const spawnOptions = {
       env: {
         ...process.env,
         VLF_OUTPUT_DIR: userSettings.outputDir,
         VLF_INPUT_DIR: userSettings.inputDir
       }
-    });
+    };
+
+    // Only set cwd for production builds where we have a real directory path
+    if (!isDev && path.dirname(pythonPath) !== '.') {
+      spawnOptions.cwd = path.dirname(pythonPath);
+    }
+
+    const pythonProcess = spawn(pythonPath, fullArgs, spawnOptions);
 
     let stdout = '';
     let stderr = '';
@@ -78,7 +96,9 @@ async function executePython(command, args = []) {
 
     pythonProcess.on('error', (err) => {
       console.error('Failed to start Python process:', err);
-      reject(err);
+      console.error('Python path:', pythonPath);
+      console.error('Working directory:', spawnOptions.cwd || process.cwd());
+      reject(new Error(`Failed to start Python process: ${err.message}\nPath: ${pythonPath}`));
     });
   });
 }
@@ -95,7 +115,6 @@ function createMainWindow() {
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, 'build', 'icon.png'),
     show: false
   });
 
