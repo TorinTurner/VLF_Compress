@@ -1,0 +1,91 @@
+{
+  "name": "vlf-compress",
+  "version": "1.0.0",
+  "description": "Portable Python/Electron application for VLF file compression and decompression",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build-python": "build-python.bat",
+    "dist-win-x64": "electron-builder --win --x64",
+    "dist": "npm run dist-win-x64",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "keywords": [
+    "vlf",
+    "compression",
+    "brotli",
+    "base32",
+    "electron",
+    "portable"
+  ],
+  "author": "Torin Turner",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {},
+  "build": {
+    "appId": "com.vlf.compress",
+    "productName": "VLF Compress",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "settings.js",
+      "renderer/**/*",
+      "python-dist/**/*"
+    ],
+    "asarUnpack": [
+      "python-dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "python-dist/vlf_compress_core",
+        "to": "python"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "deleteAppDataOnUninstall": false
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": [
+        "dmg"
+      ],
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility",
+      "icon": "build/icon.png"
+    }
+  }
+}

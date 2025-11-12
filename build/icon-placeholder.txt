@@ -1,0 +1,24 @@
+Icon Placeholder
+
+To add a custom icon for the application:
+
+1. Create icons in the following formats:
+   - icon.ico (Windows) - 256x256 pixels
+   - icon.icns (macOS) - multiple sizes
+   - icon.png (Linux) - 512x512 pixels
+
+2. Place them in this directory (build/)
+
+3. The electron-builder will automatically use them during the build process
+
+For now, Electron will use its default icon.
+
+You can create icons from a PNG using online tools:
+- https://www.icoconverter.com/ (for .ico)
+- https://cloudconvert.com/png-to-icns (for .icns)
+
+Recommended icon design:
+- Simple, clear design
+- High contrast
+- Recognizable at small sizes (16x16)
+- Use the 📡 (satellite antenna) or compression-related imagery
