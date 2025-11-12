@@ -58,7 +58,6 @@
           ]
         }
       ],
-      "icon": "build/icon.ico",
       "requestedExecutionLevel": "asInvoker"
     },
     "nsis": {
@@ -69,23 +68,19 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "runAfterFinish": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
       "deleteAppDataOnUninstall": false
     },
     "mac": {
       "category": "public.app-category.utilities",
       "target": [
         "dmg"
-      ],
-      "icon": "build/icon.icns"
+      ]
     },
     "linux": {
       "target": [
         "AppImage"
       ],
-      "category": "Utility",
-      "icon": "build/icon.png"
+      "category": "Utility"
     }
   }
 }
