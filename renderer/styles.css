@@ -7,16 +7,16 @@
 }
 
 :root {
-    --primary-color: #4fc3f7;
-    --primary-dark: #29b6f6;
-    --secondary-color: #66bb6a;
-    --background: #1e1e1e;
-    --surface: #2d2d2d;
-    --surface-light: #363636;
-    --text-primary: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --border: #404040;
-    --error: #ef5350;
+    --primary-color: #1e3c72;
+    --primary-dark: #2a5298;
+    --secondary-color: #4a5568;
+    --background: #f5f7fa;
+    --surface: white;
+    --surface-light: #f8f9fa;
+    --text-primary: #2c3e50;
+    --text-secondary: #4a5568;
+    --border: #cbd5e0;
+    --error: #e53e3e;
     --success: #66bb6a;
     --warning: #ffa726;
 }
@@ -46,6 +46,12 @@ body {
 
 .header-content {
     flex: 1;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .app-title {
@@ -91,7 +97,7 @@ body {
 
 .mode-btn.active {
     background: var(--primary-color);
-    color: var(--background);
+    color: white;
     border-color: var(--primary-dark);
 }
 
@@ -152,7 +158,7 @@ body {
 
 .step-number {
     background: var(--primary-color);
-    color: var(--background);
+    color: white;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -254,7 +260,7 @@ body {
 
 .btn-primary {
     background: var(--primary-color);
-    color: var(--background);
+    color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -290,6 +296,28 @@ body {
 
 .btn-icon:hover {
     color: var(--error);
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--surface-light);
+    border: 2px solid var(--border);
+    color: var(--primary-color);
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-dark);
 }
 
 /* Progress */
@@ -418,6 +446,82 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--surface-light);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+    color: var(--primary-color);
+    font-size: 24px;
+    margin: 0;
+}
+
+.modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s;
+}
+
+.modal-close:hover {
+    color: var(--error);
+}
+
+.modal-body {
+    padding: 25px;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.modal-body h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.modal-body p {
+    margin-bottom: 10px;
 }
 
 /* Animations */

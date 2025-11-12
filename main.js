@@ -23,11 +23,11 @@ function getPythonExecutablePath() {
   let pythonPath;
 
   if (process.platform === 'win32') {
-    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core', 'vlf_compress_core.exe');
+    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core.exe');
   } else if (process.platform === 'darwin') {
-    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core', 'vlf_compress_core');
+    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core');
   } else {
-    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core', 'vlf_compress_core');
+    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core');
   }
 
   return pythonPath;
@@ -215,12 +215,12 @@ function createSetupWindow() {
         <p>Choose where to store your files:</p>
 
         <div class="option" id="default-option">
-          <h3>📁 Default Location (Recommended)</h3>
+          <h3>Default Location (Recommended)</h3>
           <p>Store files in your user data folder</p>
         </div>
 
         <div class="option" id="custom-option">
-          <h3>🗂️ Custom Location</h3>
+          <h3>Custom Location</h3>
           <p>Choose your own folders</p>
         </div>
 

@@ -13,18 +13,20 @@
         <header class="app-header">
             <div class="header-content">
                 <h1 class="app-title">
-                    <span class="title-icon">📡</span>
                     VLF Compress
                 </h1>
                 <p class="app-subtitle">File Compression for VLF Communication</p>
             </div>
-            <div class="mode-toggle">
-                <button id="ashore-btn" class="mode-btn active" data-mode="ashore">
-                    ▲ Ashore
-                </button>
-                <button id="afloat-btn" class="mode-btn" data-mode="afloat">
-                    ▼ Afloat
-                </button>
+            <div class="header-right">
+                <div class="mode-toggle">
+                    <button id="ashore-btn" class="mode-btn active" data-mode="ashore">
+                        ▲ Ashore
+                    </button>
+                    <button id="afloat-btn" class="mode-btn" data-mode="afloat">
+                        ▼ Afloat
+                    </button>
+                </div>
+                <button class="icon-btn" id="credits-btn" title="Credits">!</button>
             </div>
         </header>
 
@@ -46,7 +48,6 @@
                         </h3>
                         <div class="file-select-area" id="ashore-file-select">
                             <div class="file-select-content">
-                                <div class="file-icon">📄</div>
                                 <p class="file-select-text">Click to select file or drag and drop</p>
                                 <button class="btn btn-secondary" id="ashore-browse-btn">Browse Files</button>
                             </div>
@@ -55,7 +56,7 @@
                                     <span class="file-name" id="ashore-file-name"></span>
                                     <span class="file-size" id="ashore-file-size"></span>
                                 </div>
-                                <button class="btn-icon" id="ashore-clear-file" title="Clear">✕</button>
+                                <button class="btn-icon" id="ashore-clear-file" title="Clear">×</button>
                             </div>
                         </div>
                     </div>
@@ -79,7 +80,6 @@
                             Compress
                         </h3>
                         <button class="btn btn-primary" id="ashore-compress-btn" disabled>
-                            <span class="btn-icon">⚡</span>
                             Compress File
                         </button>
                     </div>
@@ -125,7 +125,7 @@
                             <strong>Output:</strong> <span id="ashore-output-file">-</span>
                         </div>
                         <button class="btn btn-secondary" id="ashore-open-folder">
-                            📁 Open Folder
+                            Open Folder
                         </button>
                     </div>
                 </div>
@@ -147,7 +147,6 @@
                         </h3>
                         <div class="file-select-area" id="afloat-file-select">
                             <div class="file-select-content">
-                                <div class="file-icon">📨</div>
                                 <p class="file-select-text">Click to select encoded file or drag and drop</p>
                                 <button class="btn btn-secondary" id="afloat-browse-btn">Browse Files</button>
                             </div>
@@ -156,7 +155,7 @@
                                     <span class="file-name" id="afloat-file-name"></span>
                                     <span class="file-size" id="afloat-file-size"></span>
                                 </div>
-                                <button class="btn-icon" id="afloat-clear-file" title="Clear">✕</button>
+                                <button class="btn-icon" id="afloat-clear-file" title="Clear">×</button>
                             </div>
                         </div>
                     </div>
@@ -180,7 +179,6 @@
                             Decompress
                         </h3>
                         <button class="btn btn-primary" id="afloat-decompress-btn" disabled>
-                            <span class="btn-icon">🔓</span>
                             Decompress File
                         </button>
                     </div>
@@ -222,17 +220,31 @@
                             <strong>Output:</strong> <span id="afloat-output-file">-</span>
                         </div>
                         <button class="btn btn-secondary" id="afloat-open-folder">
-                            📁 Open Folder
+                            Open Folder
                         </button>
                     </div>
                 </div>
             </div>
         </main>
+    </div>
 
-        <!-- Footer -->
-        <footer class="app-footer">
-            <p>VLF Compress v1.0.0 | Brotli Compression + Base32 Encoding</p>
-        </footer>
+    <!-- Credits Modal -->
+    <div id="credits-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Credits</h2>
+                <button class="modal-close" id="close-credits">×</button>
+            </div>
+            <div class="modal-body">
+                <h3>VLF Compress</h3>
+                <p>File Compression for VLF Communication</p>
+                <br>
+                <p><strong>Developed by:</strong> Torin Turner</p>
+                <p><strong>Compression:</strong> Brotli + Base32 Encoding</p>
+                <br>
+                <p>This application provides efficient file compression for Very Low Frequency (VLF) communication systems.</p>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>

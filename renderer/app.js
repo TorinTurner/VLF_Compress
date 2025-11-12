@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Setup afloat (decompress) mode
     setupAfloatMode();
+
+    // Setup credits modal
+    setupCreditsModal();
 });
 
 // Mode toggle functionality
@@ -392,4 +395,26 @@ function formatBytes(bytes) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Credits modal
+function setupCreditsModal() {
+    const creditsBtn = document.getElementById('credits-btn');
+    const creditsModal = document.getElementById('credits-modal');
+    const closeCredits = document.getElementById('close-credits');
+
+    creditsBtn.addEventListener('click', () => {
+        creditsModal.classList.add('show');
+    });
+
+    closeCredits.addEventListener('click', () => {
+        creditsModal.classList.remove('show');
+    });
+
+    // Close modal when clicking outside
+    creditsModal.addEventListener('click', (e) => {
+        if (e.target === creditsModal) {
+            creditsModal.classList.remove('show');
+        }
+    });
 }
