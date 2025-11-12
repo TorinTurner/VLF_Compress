@@ -1,0 +1,110 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  release-windows-x64:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11 (64-bit)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+
+      - name: Verify Python architecture
+        run: |
+          python --version
+          python build/check-arch.py
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          cd python
+          python -m pip install -r requirements.txt
+
+      - name: Build Python executable with PyInstaller
+        run: |
+          cd python
+          python -m PyInstaller vlf_compress_core.spec --clean
+
+      - name: Copy Python build to python-dist
+        run: |
+          mkdir python-dist
+          xcopy python\dist\vlf_compress_core python-dist\vlf_compress_core\ /E /I /Y
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build Electron application
+        run: npm run dist-win-x64
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version from package.json
+        id: package_version
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.exe
+            dist/*.yml
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          name: VLF Compress v${{ steps.package_version.outputs.version }}
+          body: |
+            ## VLF Compress v${{ steps.package_version.outputs.version }}
+
+            ### Windows x64 Installer
+            Download the `.exe` file below to install VLF Compress on Windows 10/11 (64-bit).
+
+            ### Features
+            - Compress files for VLF transmission using Brotli + Base32 encoding
+            - Decompress received VLF messages
+            - Compression statistics (ratio, space saved, character count)
+            - Portable installation with bundled Python runtime
+            - Modern UI with Ashore/Afloat modes
+
+            ### Installation
+            1. Download `VLF Compress Setup x.x.x.exe`
+            2. Run the installer
+            3. Follow the setup wizard
+            4. Launch VLF Compress from the Start Menu or Desktop shortcut
+
+            ### System Requirements
+            - Windows 10/11 (64-bit)
+            - No additional software required
+
+            ---
+            For more information, see the [README](https://github.com/${{ github.repository }}/blob/main/README.md).
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: VLF-Compress-Release-v${{ steps.package_version.outputs.version }}
+          path: |
+            dist/*.exe
+            dist/*.yml
+          retention-days: 90
