@@ -12,8 +12,8 @@ bits = struct.calcsize("P") * 8
 print(f"Python architecture: {bits}-bit")
 
 if bits == 64:
-    print("✓ Python is 64-bit (required for x64 builds)")
+    print("[OK] Python is 64-bit (required for x64 builds)")
     sys.exit(0)
 else:
-    print("✗ Python is 32-bit (64-bit required for x64 builds)")
+    print("[ERROR] Python is 32-bit (64-bit required for x64 builds)")
     sys.exit(1)
