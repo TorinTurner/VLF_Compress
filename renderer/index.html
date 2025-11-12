@@ -35,8 +35,8 @@
             <!-- Ashore Mode (Compress) -->
             <div id="ashore-mode" class="mode-content active">
                 <div class="mode-header">
-                    <h2>Compress Files</h2>
-                    <p>Compress files for VLF transmission using Brotli + Base32 encoding</p>
+                    <h2>Ashore</h2>
+                    <p>Prepare files for VLF transmission using Brotli + Base32 encoding</p>
                 </div>
 
                 <div class="workflow-section">
@@ -77,24 +77,26 @@
                     <div class="workflow-step">
                         <h3 class="step-title">
                             <span class="step-number">3</span>
-                            Compress
+                            Process
                         </h3>
                         <button class="btn btn-primary" id="ashore-compress-btn" disabled>
-                            Compress File
+                            Encode File
                         </button>
                     </div>
 
                     <!-- Progress -->
                     <div class="progress-section" id="ashore-progress" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="ashore-progress-fill"></div>
+                            </div>
+                            <div class="progress-text" id="ashore-progress-text">Processing...</div>
                         </div>
-                        <p class="progress-text">Compressing text...</p>
                     </div>
 
                     <!-- Results -->
                     <div class="results-section" id="ashore-results" style="display: none;">
-                        <h3 class="results-title">Compression Complete!</h3>
+                        <h3 class="results-title">Complete!</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-label">Original Size</div>
@@ -124,6 +126,9 @@
                         <div class="output-path">
                             <strong>Output:</strong> <span id="ashore-output-file">-</span>
                         </div>
+                        <div class="instruction-box">
+                            <p><strong>Next Step:</strong> Copy the encoded text and paste it into the GENTEXT/Remarks field of your message.</p>
+                        </div>
                         <button class="btn btn-secondary" id="ashore-open-folder">
                             Open Folder
                         </button>
@@ -134,8 +139,8 @@
             <!-- Afloat Mode (Decompress) -->
             <div id="afloat-mode" class="mode-content">
                 <div class="mode-header">
-                    <h2>Decompress Files</h2>
-                    <p>Decompress received VLF messages back to original files</p>
+                    <h2>Afloat</h2>
+                    <p>Restore received VLF messages to original files</p>
                 </div>
 
                 <div class="workflow-section">
@@ -143,7 +148,7 @@
                     <div class="workflow-step">
                         <h3 class="step-title">
                             <span class="step-number">1</span>
-                            Select Encoded File
+                            Select Encoded File or Paste Text
                         </h3>
                         <div class="file-select-area" id="afloat-file-select">
                             <div class="file-select-content">
@@ -157,6 +162,21 @@
                                 </div>
                                 <button class="btn-icon" id="afloat-clear-file" title="Clear">×</button>
                             </div>
+                        </div>
+
+                        <div class="divider">
+                            <span>OR</span>
+                        </div>
+
+                        <div class="paste-section">
+                            <label for="afloat-paste-text" class="paste-label">Paste encoded text from GENTEXT/Remarks:</label>
+                            <textarea
+                                id="afloat-paste-text"
+                                class="paste-textarea"
+                                placeholder="Paste your encoded text here..."
+                                rows="5"
+                            ></textarea>
+                            <button class="btn btn-secondary" id="afloat-use-paste-btn" disabled>Use Pasted Text</button>
                         </div>
                     </div>
 
@@ -176,24 +196,26 @@
                     <div class="workflow-step">
                         <h3 class="step-title">
                             <span class="step-number">3</span>
-                            Decompress
+                            Process
                         </h3>
                         <button class="btn btn-primary" id="afloat-decompress-btn" disabled>
-                            Decompress File
+                            Decode File
                         </button>
                     </div>
 
                     <!-- Progress -->
                     <div class="progress-section" id="afloat-progress" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="afloat-progress-fill"></div>
+                            </div>
+                            <div class="progress-text" id="afloat-progress-text">Processing...</div>
                         </div>
-                        <p class="progress-text">Decompressing...</p>
                     </div>
 
                     <!-- Results -->
                     <div class="results-section" id="afloat-results" style="display: none;">
-                        <h3 class="results-title">Decompression Complete!</h3>
+                        <h3 class="results-title">Complete!</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-label">Encoded Size</div>
@@ -239,7 +261,9 @@
                 <h3>VLF Compress</h3>
                 <p>File Compression for VLF Communication</p>
                 <br>
-                <p><strong>Developed by:</strong> Torin Turner</p>
+                <p><strong>Wrapper and improved Python script by:</strong></p>
+                <p>ITN1 Torin Turner / Elevated Engineering LLC</p>
+                <br>
                 <p><strong>Compression:</strong> Brotli + Base32 Encoding</p>
                 <br>
                 <p>This application provides efficient file compression for Very Low Frequency (VLF) communication systems.</p>

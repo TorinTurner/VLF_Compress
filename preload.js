@@ -23,7 +23,10 @@ contextBridge.exposeInMainWorld('vlf', {
 
   // Compression operations
   compressFile: (args) => ipcRenderer.invoke('compress-file', args),
-  decompressFile: (args) => ipcRenderer.invoke('decompress-file', args)
+  decompressFile: (args) => ipcRenderer.invoke('decompress-file', args),
+
+  // Create temporary file from pasted text
+  createTempFile: (content) => ipcRenderer.invoke('create-temp-file', content)
 });
 
 // Separate context for setup dialog

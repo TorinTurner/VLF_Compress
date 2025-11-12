@@ -147,6 +147,8 @@ function setupAfloatMode() {
     const outputBrowse = document.getElementById('afloat-output-browse');
     const decompressBtn = document.getElementById('afloat-decompress-btn');
     const openFolderBtn = document.getElementById('afloat-open-folder');
+    const pasteTextarea = document.getElementById('afloat-paste-text');
+    const usePasteBtn = document.getElementById('afloat-use-paste-btn');
 
     // File selection
     browseBtn.addEventListener('click', async () => {
@@ -160,6 +162,9 @@ function setupAfloatMode() {
 
         if (filePath) {
             setAfloatFile(filePath);
+            // Clear paste textarea when file is selected
+            pasteTextarea.value = '';
+            usePasteBtn.disabled = true;
         }
     });
 
@@ -179,12 +184,33 @@ function setupAfloatMode() {
 
         if (e.dataTransfer.files.length > 0) {
             setAfloatFile(e.dataTransfer.files[0].path);
+            // Clear paste textarea when file is dropped
+            pasteTextarea.value = '';
+            usePasteBtn.disabled = true;
         }
     });
 
     // Clear file
     clearBtn.addEventListener('click', () => {
         clearAfloatFile();
+    });
+
+    // Paste textarea handling
+    pasteTextarea.addEventListener('input', () => {
+        const hasText = pasteTextarea.value.trim().length > 0;
+        usePasteBtn.disabled = !hasText;
+    });
+
+    // Use pasted text button
+    usePasteBtn.addEventListener('click', async () => {
+        const pastedText = pasteTextarea.value.trim();
+        if (!pastedText) return;
+
+        // Create a temporary file from pasted text
+        const tempFilePath = await window.vlf.createTempFile(pastedText);
+        if (tempFilePath) {
+            setAfloatFile(tempFilePath, true);
+        }
     });
 
     // Output location
@@ -262,10 +288,10 @@ function updateAshoreCompressButton() {
 }
 
 // Afloat file management
-function setAfloatFile(filePath) {
+function setAfloatFile(filePath, isPasted = false) {
     state.afloat.inputFile = filePath;
 
-    const fileName = filePath.split(/[\\/]/).pop();
+    const fileName = isPasted ? 'Pasted Text' : filePath.split(/[\\/]/).pop();
     const fileInfo = document.getElementById('afloat-file-info');
     const fileSelect = document.querySelector('#afloat-file-select .file-select-content');
 
@@ -276,12 +302,20 @@ function setAfloatFile(filePath) {
     fileInfo.style.display = 'flex';
 
     // Auto-suggest output path
-    const baseName = fileName.replace(/\.[^/.]+$/, '');
+    const baseName = isPasted ? 'pasted' : fileName.replace(/\.[^/.]+$/, '');
     state.afloat.outputPath = `${state.settings.outputDir}/${baseName}_decompressed.txt`.replace(/\\/g, '/');
     document.getElementById('afloat-output-path').value = state.afloat.outputPath;
 
     // Hide previous results
     document.getElementById('afloat-results').style.display = 'none';
+
+    // Hide paste section after using pasted text
+    if (isPasted) {
+        const pasteTextarea = document.getElementById('afloat-paste-text');
+        const usePasteBtn = document.getElementById('afloat-use-paste-btn');
+        pasteTextarea.value = '';
+        usePasteBtn.disabled = true;
+    }
 
     updateAfloatDecompressButton();
 }
@@ -312,17 +346,32 @@ async function compressFile() {
     const progressSection = document.getElementById('ashore-progress');
     const resultsSection = document.getElementById('ashore-results');
     const compressBtn = document.getElementById('ashore-compress-btn');
+    const progressFill = document.getElementById('ashore-progress-fill');
+    const progressText = document.getElementById('ashore-progress-text');
 
     // Show progress
     progressSection.style.display = 'block';
     resultsSection.style.display = 'none';
     compressBtn.disabled = true;
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Processing...';
+
+    // Simulate progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        progressFill.style.width = `${progress}%`;
+    }, 100);
 
     try {
         const result = await window.vlf.compressFile({
             inputPath: state.ashore.inputFile,
             outputPath: state.ashore.outputPath
         });
+
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
 
         if (result.success) {
             // Display results
@@ -340,6 +389,7 @@ async function compressFile() {
             throw new Error(result.error || 'Compression failed');
         }
     } catch (error) {
+        clearInterval(progressInterval);
         alert(`Compression Error: ${error.message}`);
         progressSection.style.display = 'none';
     } finally {
@@ -352,17 +402,32 @@ async function decompressFile() {
     const progressSection = document.getElementById('afloat-progress');
     const resultsSection = document.getElementById('afloat-results');
     const decompressBtn = document.getElementById('afloat-decompress-btn');
+    const progressFill = document.getElementById('afloat-progress-fill');
+    const progressText = document.getElementById('afloat-progress-text');
 
     // Show progress
     progressSection.style.display = 'block';
     resultsSection.style.display = 'none';
     decompressBtn.disabled = true;
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Processing...';
+
+    // Simulate progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        progressFill.style.width = `${progress}%`;
+    }, 100);
 
     try {
         const result = await window.vlf.decompressFile({
             inputPath: state.afloat.inputFile,
             outputPath: state.afloat.outputPath
         });
+
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
 
         if (result.success) {
             // Display results
@@ -379,6 +444,7 @@ async function decompressFile() {
             throw new Error(result.error || 'Decompression failed');
         }
     } catch (error) {
+        clearInterval(progressInterval);
         alert(`Decompression Error: ${error.message}`);
         progressSection.style.display = 'none';
     } finally {

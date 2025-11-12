@@ -379,6 +379,25 @@ ipcMain.handle('decompress-file', async (event, args) => {
   }
 });
 
+ipcMain.handle('create-temp-file', async (event, content) => {
+  try {
+    const tempDir = path.join(userSettings.inputDir, '.temp');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    const tempFileName = `pasted_${Date.now()}.txt`;
+    const tempFilePath = path.join(tempDir, tempFileName);
+
+    fs.writeFileSync(tempFilePath, content, 'utf8');
+
+    return tempFilePath;
+  } catch (error) {
+    console.error('Failed to create temp file:', error);
+    return null;
+  }
+});
+
 ipcMain.handle('complete-setup', async (event, config) => {
   if (config.useDefault) {
     userSettings = getDefaultSettings(app.getPath('exe'));
