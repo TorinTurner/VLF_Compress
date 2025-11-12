@@ -30,16 +30,17 @@
     "appId": "com.vlf.compress",
     "productName": "VLF Compress",
     "directories": {
-      "output": "dist",
-      "buildResources": "build"
+      "output": "dist"
     },
     "files": [
       "main.js",
       "preload.js",
       "settings.js",
       "renderer/**/*",
-      "python-dist/**/*"
+      "python-dist/**/*",
+      "package.json"
     ],
+    "asar": true,
     "asarUnpack": [
       "python-dist/**/*"
     ],
@@ -50,16 +51,10 @@
       }
     ],
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "icon": "build/icon.ico",
-      "requestedExecutionLevel": "asInvoker"
+      "target": "nsis",
+      "requestedExecutionLevel": "asInvoker",
+      "signingHashAlgorithms": ["sha256"],
+      "icon": null
     },
     "nsis": {
       "oneClick": false,
@@ -69,23 +64,29 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "runAfterFinish": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
+      "differentialPackage": false,
+      "artifactName": "${productName}-Setup-${version}-${arch}.${ext}",
+      "installerIcon": null,
+      "uninstallerIcon": null,
+      "license": null,
+      "warningsAsErrors": false,
+      "unicode": true,
       "deleteAppDataOnUninstall": false
     },
     "mac": {
       "category": "public.app-category.utilities",
-      "target": [
-        "dmg"
-      ],
-      "icon": "build/icon.icns"
+      "target": {
+        "target": "dmg",
+        "arch": ["x64", "arm64"]
+      }
     },
     "linux": {
-      "target": [
-        "AppImage"
-      ],
+      "target": {
+        "target": "AppImage",
+        "arch": ["x64"]
+      },
       "category": "Utility",
-      "icon": "build/icon.png"
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
     }
   }
 }
