@@ -23,11 +23,11 @@ function getPythonExecutablePath() {
   let pythonPath;
 
   if (process.platform === 'win32') {
-    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core', 'vlf_compress_core.exe');
+    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core.exe');
   } else if (process.platform === 'darwin') {
-    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core', 'vlf_compress_core');
+    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core');
   } else {
-    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core', 'vlf_compress_core');
+    pythonPath = path.join(appRoot, 'python', 'vlf_compress_core');
   }
 
   return pythonPath;
@@ -160,26 +160,27 @@ function createSetupWindow() {
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             padding: 30px;
-            background: #1e1e1e;
-            color: #e0e0e0;
+            background: #f5f7fa;
+            color: #2c3e50;
           }
-          h1 { color: #4fc3f7; margin-bottom: 20px; }
-          p { line-height: 1.6; margin-bottom: 20px; }
+          h1 { color: #1e3c72; margin-bottom: 20px; }
+          p { line-height: 1.6; margin-bottom: 20px; color: #4a5568; }
           .option {
-            background: #2d2d2d;
+            background: white;
             padding: 20px;
             margin: 15px 0;
             border-radius: 8px;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: 2px solid #cbd5e0;
             transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
           }
-          .option:hover { border-color: #4fc3f7; background: #363636; }
-          .option h3 { margin: 0 0 10px 0; color: #4fc3f7; }
-          .option p { margin: 0; font-size: 14px; color: #b0b0b0; }
+          .option:hover { border-color: #1e3c72; background: #f8f9fa; }
+          .option h3 { margin: 0 0 10px 0; color: #1e3c72; }
+          .option p { margin: 0; font-size: 14px; color: #4a5568; }
           button {
-            background: #4fc3f7;
-            color: #1e1e1e;
+            background: #1e3c72;
+            color: white;
             border: none;
             padding: 12px 30px;
             border-radius: 6px;
@@ -187,10 +188,10 @@ function createSetupWindow() {
             font-weight: bold;
             cursor: pointer;
             margin-top: 20px;
-            transition: background 0.3s;
+            transition: all 0.3s;
           }
-          button:hover { background: #29b6f6; }
-          button:disabled { background: #666; cursor: not-allowed; }
+          button:hover { background: #2a5298; transform: translateY(-2px); }
+          button:disabled { background: #cbd5e0; cursor: not-allowed; opacity: 0.5; }
           .custom-paths { display: none; margin-top: 20px; }
           .custom-paths.show { display: block; }
           .path-input {
@@ -198,29 +199,34 @@ function createSetupWindow() {
             display: flex;
             flex-direction: column;
           }
-          .path-input label { margin-bottom: 5px; font-weight: bold; }
+          .path-input label { margin-bottom: 5px; font-weight: bold; color: #2c3e50; }
           .path-input input {
             padding: 10px;
-            background: #2d2d2d;
-            border: 1px solid #4fc3f7;
+            background: #f8f9fa;
+            border: 2px solid #cbd5e0;
             border-radius: 4px;
-            color: #e0e0e0;
+            color: #2c3e50;
             font-size: 14px;
             margin-right: 10px;
+            margin-bottom: 10px;
+          }
+          .path-input input:focus {
+            outline: none;
+            border-color: #1e3c72;
           }
         </style>
       </head>
       <body>
-        <h1>Welcome to VLF Compress</h1>
+        <h1>Welcome to GENTEXT Compress</h1>
         <p>Choose where to store your files:</p>
 
         <div class="option" id="default-option">
-          <h3>📁 Default Location (Recommended)</h3>
+          <h3>Default Location (Recommended)</h3>
           <p>Store files in your user data folder</p>
         </div>
 
         <div class="option" id="custom-option">
-          <h3>🗂️ Custom Location</h3>
+          <h3>Custom Location</h3>
           <p>Choose your own folders</p>
         </div>
 
@@ -246,15 +252,15 @@ function createSetupWindow() {
 
           document.getElementById('default-option').addEventListener('click', () => {
             useDefault = true;
-            document.getElementById('default-option').style.borderColor = '#4fc3f7';
-            document.getElementById('custom-option').style.borderColor = 'transparent';
+            document.getElementById('default-option').style.borderColor = '#1e3c72';
+            document.getElementById('custom-option').style.borderColor = '#cbd5e0';
             document.getElementById('custom-paths').classList.remove('show');
           });
 
           document.getElementById('custom-option').addEventListener('click', () => {
             useDefault = false;
-            document.getElementById('custom-option').style.borderColor = '#4fc3f7';
-            document.getElementById('default-option').style.borderColor = 'transparent';
+            document.getElementById('custom-option').style.borderColor = '#1e3c72';
+            document.getElementById('default-option').style.borderColor = '#cbd5e0';
             document.getElementById('custom-paths').classList.add('show');
           });
 
@@ -376,6 +382,25 @@ ipcMain.handle('decompress-file', async (event, args) => {
       success: false,
       error: error.message
     };
+  }
+});
+
+ipcMain.handle('create-temp-file', async (event, content) => {
+  try {
+    const tempDir = path.join(userSettings.inputDir, '.temp');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    const tempFileName = `pasted_${Date.now()}.txt`;
+    const tempFilePath = path.join(tempDir, tempFileName);
+
+    fs.writeFileSync(tempFilePath, content, 'utf8');
+
+    return tempFilePath;
+  } catch (error) {
+    console.error('Failed to create temp file:', error);
+    return null;
   }
 });
 

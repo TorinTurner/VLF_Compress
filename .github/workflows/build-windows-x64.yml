@@ -67,10 +67,3 @@ jobs:
           name: VLF-Compress-Windows-x64-Installer
           path: dist/*.exe
           if-no-files-found: error
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: VLF-Compress-Windows-x64-Unpacked
-          path: dist/win-unpacked/
-          if-no-files-found: warn

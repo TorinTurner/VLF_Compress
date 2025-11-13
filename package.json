@@ -1,7 +1,7 @@
 {
-  "name": "vlf-compress",
+  "name": "gentext-compress",
   "version": "1.0.0",
-  "description": "Portable Python/Electron application for VLF file compression and decompression",
+  "description": "Portable Python/Electron application for message compression and decompression",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -27,8 +27,8 @@
   },
   "dependencies": {},
   "build": {
-    "appId": "com.vlf.compress",
-    "productName": "VLF Compress",
+    "appId": "com.gentext.compress",
+    "productName": "GENTEXT Compress",
     "directories": {
       "output": "dist"
     },
