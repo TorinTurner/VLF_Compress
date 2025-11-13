@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
-    <title>VLF Compress</title>
+    <title>GENTEXT Compress</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,9 +13,9 @@
         <header class="app-header">
             <div class="header-content">
                 <h1 class="app-title">
-                    VLF Compress
+                    GENTEXT Compress
                 </h1>
-                <p class="app-subtitle">File Compression for VLF Communication</p>
+                <p class="app-subtitle">Efficient Message Compression</p>
             </div>
             <div class="header-right">
                 <div class="mode-toggle">
@@ -36,7 +36,7 @@
             <div id="ashore-mode" class="mode-content active">
                 <div class="mode-header">
                     <h2>Ashore</h2>
-                    <p>Prepare files for VLF transmission using Brotli + Base32 encoding</p>
+                    <p>Prepare messages for transmission using Brotli + Base32 encoding</p>
                 </div>
 
                 <div class="workflow-section">
@@ -44,7 +44,7 @@
                     <div class="workflow-step">
                         <h3 class="step-title">
                             <span class="step-number">1</span>
-                            Select Input File
+                            Select Input File or Paste Text
                         </h3>
                         <div class="file-select-area" id="ashore-file-select">
                             <div class="file-select-content">
@@ -58,6 +58,21 @@
                                 </div>
                                 <button class="btn-icon" id="ashore-clear-file" title="Clear">×</button>
                             </div>
+                        </div>
+
+                        <div class="divider">
+                            <span>OR</span>
+                        </div>
+
+                        <div class="paste-section">
+                            <label for="ashore-paste-text" class="paste-label">Paste text to encode:</label>
+                            <textarea
+                                id="ashore-paste-text"
+                                class="paste-textarea"
+                                placeholder="Paste your text here..."
+                                rows="5"
+                            ></textarea>
+                            <button class="btn btn-secondary" id="ashore-use-paste-btn" disabled>Use Pasted Text</button>
                         </div>
                     </div>
 
@@ -119,7 +134,11 @@
                                 <div class="stat-value" id="ashore-stat-saved">-</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-label">Character Count</div>
+                                <div class="stat-label">Original Character Count</div>
+                                <div class="stat-value" id="ashore-stat-original-chars">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Encoded Character Count</div>
                                 <div class="stat-value" id="ashore-stat-chars">-</div>
                             </div>
                         </div>
@@ -127,7 +146,7 @@
                             <strong>Output:</strong> <span id="ashore-output-file">-</span>
                         </div>
                         <div class="instruction-box">
-                            <p><strong>Next Step:</strong> Copy the encoded text and paste it into the GENTEXT/Remarks field of your message.</p>
+                            <p><strong>Next Step:</strong> Copy the encoded text and paste it into the GENTEXT/REMARKS field of your message.</p>
                         </div>
                         <button class="btn btn-secondary" id="ashore-open-folder">
                             Open Folder
@@ -140,7 +159,7 @@
             <div id="afloat-mode" class="mode-content">
                 <div class="mode-header">
                     <h2>Afloat</h2>
-                    <p>Restore received VLF messages to original files</p>
+                    <p>Restore received messages to original files</p>
                 </div>
 
                 <div class="workflow-section">
@@ -169,7 +188,7 @@
                         </div>
 
                         <div class="paste-section">
-                            <label for="afloat-paste-text" class="paste-label">Paste encoded text from GENTEXT/Remarks:</label>
+                            <label for="afloat-paste-text" class="paste-label">Paste encoded text from GENTEXT/REMARKS:</label>
                             <textarea
                                 id="afloat-paste-text"
                                 class="paste-textarea"
@@ -234,7 +253,11 @@
                                 <div class="stat-value" id="afloat-stat-ratio">-</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-label">Character Count</div>
+                                <div class="stat-label">Compressed Character Count</div>
+                                <div class="stat-value" id="afloat-stat-compressed-chars">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Decompressed Character Count</div>
                                 <div class="stat-value" id="afloat-stat-chars">-</div>
                             </div>
                         </div>
@@ -258,15 +281,15 @@
                 <button class="modal-close" id="close-credits">×</button>
             </div>
             <div class="modal-body">
-                <h3>VLF Compress</h3>
-                <p>File Compression for VLF Communication</p>
+                <h3>GENTEXT Compress</h3>
+                <p>Efficient Message Compression</p>
                 <br>
-                <p><strong>Wrapper and improved Python script by:</strong></p>
+                <p><strong>GUI/Program presented by:</strong></p>
                 <p>ITN1 Torin Turner / Elevated Engineering LLC</p>
                 <br>
                 <p><strong>Compression:</strong> Brotli + Base32 Encoding</p>
                 <br>
-                <p>This application provides efficient file compression for Very Low Frequency (VLF) communication systems.</p>
+                <p>This application provides efficient compression for message transmission systems.</p>
             </div>
         </div>
     </div>

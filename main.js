@@ -211,7 +211,7 @@ function createSetupWindow() {
         </style>
       </head>
       <body>
-        <h1>Welcome to VLF Compress</h1>
+        <h1>Welcome to GENTEXT Compress</h1>
         <p>Choose where to store your files:</p>
 
         <div class="option" id="default-option">

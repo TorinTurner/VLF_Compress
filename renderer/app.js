@@ -71,6 +71,8 @@ function setupAshoreMode() {
     const outputBrowse = document.getElementById('ashore-output-browse');
     const compressBtn = document.getElementById('ashore-compress-btn');
     const openFolderBtn = document.getElementById('ashore-open-folder');
+    const pasteTextarea = document.getElementById('ashore-paste-text');
+    const usePasteBtn = document.getElementById('ashore-use-paste-btn');
 
     // File selection
     browseBtn.addEventListener('click', async () => {
@@ -84,6 +86,9 @@ function setupAshoreMode() {
 
         if (filePath) {
             setAshoreFile(filePath);
+            // Clear paste textarea when file is selected
+            pasteTextarea.value = '';
+            usePasteBtn.disabled = true;
         }
     });
 
@@ -103,12 +108,33 @@ function setupAshoreMode() {
 
         if (e.dataTransfer.files.length > 0) {
             setAshoreFile(e.dataTransfer.files[0].path);
+            // Clear paste textarea when file is dropped
+            pasteTextarea.value = '';
+            usePasteBtn.disabled = true;
         }
     });
 
     // Clear file
     clearBtn.addEventListener('click', () => {
         clearAshoreFile();
+    });
+
+    // Paste textarea handling
+    pasteTextarea.addEventListener('input', () => {
+        const hasText = pasteTextarea.value.trim().length > 0;
+        usePasteBtn.disabled = !hasText;
+    });
+
+    // Use pasted text button
+    usePasteBtn.addEventListener('click', async () => {
+        const pastedText = pasteTextarea.value.trim();
+        if (!pastedText) return;
+
+        // Create a temporary file from pasted text
+        const tempFilePath = await window.vlf.createTempFile(pastedText);
+        if (tempFilePath) {
+            setAshoreFile(tempFilePath, true);
+        }
     });
 
     // Output location
@@ -242,10 +268,10 @@ function setupAfloatMode() {
 }
 
 // Ashore file management
-function setAshoreFile(filePath) {
+function setAshoreFile(filePath, isPasted = false) {
     state.ashore.inputFile = filePath;
 
-    const fileName = filePath.split(/[\\/]/).pop();
+    const fileName = isPasted ? 'Pasted Text' : filePath.split(/[\\/]/).pop();
     const fileInfo = document.getElementById('ashore-file-info');
     const fileSelect = document.querySelector('#ashore-file-select .file-select-content');
 
@@ -256,12 +282,20 @@ function setAshoreFile(filePath) {
     fileInfo.style.display = 'flex';
 
     // Auto-suggest output path
-    const baseName = fileName.replace(/\.[^/.]+$/, '');
+    const baseName = isPasted ? 'pasted' : fileName.replace(/\.[^/.]+$/, '');
     state.ashore.outputPath = `${state.settings.outputDir}/${baseName}_compressed.txt`.replace(/\\/g, '/');
     document.getElementById('ashore-output-path').value = state.ashore.outputPath;
 
     // Hide previous results
     document.getElementById('ashore-results').style.display = 'none';
+
+    // Hide paste section after using pasted text
+    if (isPasted) {
+        const pasteTextarea = document.getElementById('ashore-paste-text');
+        const usePasteBtn = document.getElementById('ashore-use-paste-btn');
+        pasteTextarea.value = '';
+        usePasteBtn.disabled = true;
+    }
 
     updateAshoreCompressButton();
 }
@@ -380,6 +414,7 @@ async function compressFile() {
             document.getElementById('ashore-stat-encoded').textContent = formatBytes(result.encoded_size);
             document.getElementById('ashore-stat-ratio').textContent = `${result.compression_ratio}:1`;
             document.getElementById('ashore-stat-saved').textContent = `${result.space_saved_percent}%`;
+            document.getElementById('ashore-stat-original-chars').textContent = result.original_size.toLocaleString();
             document.getElementById('ashore-stat-chars').textContent = result.character_count.toLocaleString();
             document.getElementById('ashore-output-file').textContent = result.output_file;
 
@@ -435,7 +470,8 @@ async function decompressFile() {
             document.getElementById('afloat-stat-compressed').textContent = formatBytes(result.compressed_size);
             document.getElementById('afloat-stat-decompressed').textContent = formatBytes(result.decompressed_size);
             document.getElementById('afloat-stat-ratio').textContent = `${result.compression_ratio}:1`;
-            document.getElementById('afloat-stat-chars').textContent = result.character_count.toLocaleString();
+            document.getElementById('afloat-stat-compressed-chars').textContent = result.encoded_size.toLocaleString();
+            document.getElementById('afloat-stat-chars').textContent = result.decompressed_size.toLocaleString();
             document.getElementById('afloat-output-file').textContent = result.output_file;
 
             progressSection.style.display = 'none';
