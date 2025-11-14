@@ -241,10 +241,8 @@ Examples:
                 print(f"Compressed Size:  {result['compressed_size']:,} bytes")
                 print(f"Encoded Size:     {result['encoded_size']:,} characters")
                 print(f"\n{'--- COMPRESSION STATISTICS ---':^60}")
-                print(f"Compression Ratio:       {result['compression_ratio']}:1")
                 print(f"Overall Ratio:           {result['overall_ratio']}:1")
                 print(f"Space Saved:             {result['space_saved_percent']}%")
-                print(f"Encoding Overhead:       {result['encoding_overhead']}x")
                 print(f"Character Count:         {result['character_count']:,}")
                 print(f"\n{'--- VLF TRANSMISSION TIME ---':^60}")
                 print(f"Transmission Time (50 baud):  {result['vlf_transmission_time_minutes']} minutes")
@@ -257,7 +255,6 @@ Examples:
                 print(f"Compressed Size:    {result['compressed_size']:,} bytes")
                 print(f"Decompressed Size:  {result['decompressed_size']:,} bytes")
                 print(f"\n{'--- DECOMPRESSION STATISTICS ---':^60}")
-                print(f"Compression Ratio:  {result['compression_ratio']}:1")
                 print(f"Overall Ratio:      {result['overall_ratio']}:1")
 
             print(f"\n{'='*60}\n")
