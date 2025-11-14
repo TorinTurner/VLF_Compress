@@ -39,14 +39,33 @@ def compress_file(input_path, output_path):
         encoded_data = base64.b32encode(compressed_data).decode('ASCII')
         encoded_size = len(encoded_data)
 
-        # Write the encoded ASCII string to output file
+        # Format encoded data for naval message remarks (69 characters per line)
+        formatted_lines = []
+        for i in range(0, len(encoded_data), 69):
+            formatted_lines.append(encoded_data[i:i+69])
+        formatted_data = '\n'.join(formatted_lines)
+
+        # Write the formatted encoded ASCII string to output file
         with open(output_path, 'w') as file:
-            file.write(encoded_data)
+            file.write(formatted_data)
 
         # Calculate statistics
         compression_ratio = original_size / compressed_size if compressed_size > 0 else 0
         encoding_ratio = compressed_size / encoded_size if encoded_size > 0 else 0
         overall_ratio = original_size / encoded_size if encoded_size > 0 else 0
+
+        # Calculate VLF transmission time
+        # VLF typically uses 50 baud (Baudot encoding: 5 bits + start/stop bits = ~7.5 bits/char)
+        # Characters per second: 50 baud / 7.5 bits/char ≈ 6.67 chars/sec
+        chars_per_second = 50 / 7.5
+        transmission_seconds = encoded_size / chars_per_second
+        transmission_minutes = transmission_seconds / 60
+
+        # Provide range (45-50 baud typical for VLF)
+        min_chars_per_sec = 45 / 7.5
+        max_chars_per_sec = 50 / 7.5
+        min_time_minutes = encoded_size / max_chars_per_sec / 60
+        max_time_minutes = encoded_size / min_chars_per_sec / 60
 
         stats = {
             'success': True,
@@ -58,6 +77,8 @@ def compress_file(input_path, output_path):
             'encoding_overhead': round(1 / encoding_ratio, 2) if encoding_ratio > 0 else 0,
             'overall_ratio': round(overall_ratio, 2),
             'space_saved_percent': round((1 - encoded_size / original_size) * 100, 2) if original_size > 0 else 0,
+            'vlf_transmission_time_minutes': round(transmission_minutes, 2),
+            'vlf_transmission_range_minutes': f"{round(min_time_minutes, 2)}-{round(max_time_minutes, 2)}",
             'input_file': str(input_path),
             'output_file': str(output_path)
         }
@@ -96,6 +117,9 @@ def decompress_file(input_path, output_path):
         # Read the encoded data from the file
         with open(input_path, 'r') as file:
             encoded_data = file.read()
+
+        # Remove all newlines/whitespace from formatted input
+        encoded_data = encoded_data.replace('\n', '').replace('\r', '').replace(' ', '').replace('\t', '')
 
         encoded_size = len(encoded_data)
 
@@ -222,6 +246,9 @@ Examples:
                 print(f"Space Saved:             {result['space_saved_percent']}%")
                 print(f"Encoding Overhead:       {result['encoding_overhead']}x")
                 print(f"Character Count:         {result['character_count']:,}")
+                print(f"\n{'--- VLF TRANSMISSION TIME ---':^60}")
+                print(f"Transmission Time (50 baud):  {result['vlf_transmission_time_minutes']} minutes")
+                print(f"Estimated Range (45-50 baud): {result['vlf_transmission_range_minutes']} minutes")
             else:
                 print(f"\nInput File:       {result['input_file']}")
                 print(f"Output File:      {result['output_file']}")
