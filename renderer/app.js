@@ -30,6 +30,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Setup afloat (decompress) mode
     setupAfloatMode();
+
+    // Setup credits modal
+    setupCreditsModal();
 });
 
 // Mode toggle functionality
@@ -68,6 +71,8 @@ function setupAshoreMode() {
     const outputBrowse = document.getElementById('ashore-output-browse');
     const compressBtn = document.getElementById('ashore-compress-btn');
     const openFolderBtn = document.getElementById('ashore-open-folder');
+    const pasteTextarea = document.getElementById('ashore-paste-text');
+    const usePasteBtn = document.getElementById('ashore-use-paste-btn');
 
     // File selection
     browseBtn.addEventListener('click', async () => {
@@ -81,6 +86,9 @@ function setupAshoreMode() {
 
         if (filePath) {
             setAshoreFile(filePath);
+            // Clear paste textarea when file is selected
+            pasteTextarea.value = '';
+            usePasteBtn.disabled = true;
         }
     });
 
@@ -100,12 +108,33 @@ function setupAshoreMode() {
 
         if (e.dataTransfer.files.length > 0) {
             setAshoreFile(e.dataTransfer.files[0].path);
+            // Clear paste textarea when file is dropped
+            pasteTextarea.value = '';
+            usePasteBtn.disabled = true;
         }
     });
 
     // Clear file
     clearBtn.addEventListener('click', () => {
         clearAshoreFile();
+    });
+
+    // Paste textarea handling
+    pasteTextarea.addEventListener('input', () => {
+        const hasText = pasteTextarea.value.trim().length > 0;
+        usePasteBtn.disabled = !hasText;
+    });
+
+    // Use pasted text button
+    usePasteBtn.addEventListener('click', async () => {
+        const pastedText = pasteTextarea.value.trim();
+        if (!pastedText) return;
+
+        // Create a temporary file from pasted text
+        const tempFilePath = await window.vlf.createTempFile(pastedText);
+        if (tempFilePath) {
+            setAshoreFile(tempFilePath, true);
+        }
     });
 
     // Output location
@@ -144,6 +173,8 @@ function setupAfloatMode() {
     const outputBrowse = document.getElementById('afloat-output-browse');
     const decompressBtn = document.getElementById('afloat-decompress-btn');
     const openFolderBtn = document.getElementById('afloat-open-folder');
+    const pasteTextarea = document.getElementById('afloat-paste-text');
+    const usePasteBtn = document.getElementById('afloat-use-paste-btn');
 
     // File selection
     browseBtn.addEventListener('click', async () => {
@@ -157,6 +188,9 @@ function setupAfloatMode() {
 
         if (filePath) {
             setAfloatFile(filePath);
+            // Clear paste textarea when file is selected
+            pasteTextarea.value = '';
+            usePasteBtn.disabled = true;
         }
     });
 
@@ -176,12 +210,33 @@ function setupAfloatMode() {
 
         if (e.dataTransfer.files.length > 0) {
             setAfloatFile(e.dataTransfer.files[0].path);
+            // Clear paste textarea when file is dropped
+            pasteTextarea.value = '';
+            usePasteBtn.disabled = true;
         }
     });
 
     // Clear file
     clearBtn.addEventListener('click', () => {
         clearAfloatFile();
+    });
+
+    // Paste textarea handling
+    pasteTextarea.addEventListener('input', () => {
+        const hasText = pasteTextarea.value.trim().length > 0;
+        usePasteBtn.disabled = !hasText;
+    });
+
+    // Use pasted text button
+    usePasteBtn.addEventListener('click', async () => {
+        const pastedText = pasteTextarea.value.trim();
+        if (!pastedText) return;
+
+        // Create a temporary file from pasted text
+        const tempFilePath = await window.vlf.createTempFile(pastedText);
+        if (tempFilePath) {
+            setAfloatFile(tempFilePath, true);
+        }
     });
 
     // Output location
@@ -213,10 +268,10 @@ function setupAfloatMode() {
 }
 
 // Ashore file management
-function setAshoreFile(filePath) {
+function setAshoreFile(filePath, isPasted = false) {
     state.ashore.inputFile = filePath;
 
-    const fileName = filePath.split(/[\\/]/).pop();
+    const fileName = isPasted ? 'Pasted Text' : filePath.split(/[\\/]/).pop();
     const fileInfo = document.getElementById('ashore-file-info');
     const fileSelect = document.querySelector('#ashore-file-select .file-select-content');
 
@@ -227,12 +282,20 @@ function setAshoreFile(filePath) {
     fileInfo.style.display = 'flex';
 
     // Auto-suggest output path
-    const baseName = fileName.replace(/\.[^/.]+$/, '');
+    const baseName = isPasted ? 'pasted' : fileName.replace(/\.[^/.]+$/, '');
     state.ashore.outputPath = `${state.settings.outputDir}/${baseName}_compressed.txt`.replace(/\\/g, '/');
     document.getElementById('ashore-output-path').value = state.ashore.outputPath;
 
     // Hide previous results
     document.getElementById('ashore-results').style.display = 'none';
+
+    // Hide paste section after using pasted text
+    if (isPasted) {
+        const pasteTextarea = document.getElementById('ashore-paste-text');
+        const usePasteBtn = document.getElementById('ashore-use-paste-btn');
+        pasteTextarea.value = '';
+        usePasteBtn.disabled = true;
+    }
 
     updateAshoreCompressButton();
 }
@@ -259,10 +322,10 @@ function updateAshoreCompressButton() {
 }
 
 // Afloat file management
-function setAfloatFile(filePath) {
+function setAfloatFile(filePath, isPasted = false) {
     state.afloat.inputFile = filePath;
 
-    const fileName = filePath.split(/[\\/]/).pop();
+    const fileName = isPasted ? 'Pasted Text' : filePath.split(/[\\/]/).pop();
     const fileInfo = document.getElementById('afloat-file-info');
     const fileSelect = document.querySelector('#afloat-file-select .file-select-content');
 
@@ -273,12 +336,20 @@ function setAfloatFile(filePath) {
     fileInfo.style.display = 'flex';
 
     // Auto-suggest output path
-    const baseName = fileName.replace(/\.[^/.]+$/, '');
+    const baseName = isPasted ? 'pasted' : fileName.replace(/\.[^/.]+$/, '');
     state.afloat.outputPath = `${state.settings.outputDir}/${baseName}_decompressed.txt`.replace(/\\/g, '/');
     document.getElementById('afloat-output-path').value = state.afloat.outputPath;
 
     // Hide previous results
     document.getElementById('afloat-results').style.display = 'none';
+
+    // Hide paste section after using pasted text
+    if (isPasted) {
+        const pasteTextarea = document.getElementById('afloat-paste-text');
+        const usePasteBtn = document.getElementById('afloat-use-paste-btn');
+        pasteTextarea.value = '';
+        usePasteBtn.disabled = true;
+    }
 
     updateAfloatDecompressButton();
 }
@@ -309,17 +380,32 @@ async function compressFile() {
     const progressSection = document.getElementById('ashore-progress');
     const resultsSection = document.getElementById('ashore-results');
     const compressBtn = document.getElementById('ashore-compress-btn');
+    const progressFill = document.getElementById('ashore-progress-fill');
+    const progressText = document.getElementById('ashore-progress-text');
 
     // Show progress
     progressSection.style.display = 'block';
     resultsSection.style.display = 'none';
     compressBtn.disabled = true;
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Processing...';
+
+    // Simulate progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        progressFill.style.width = `${progress}%`;
+    }, 100);
 
     try {
         const result = await window.vlf.compressFile({
             inputPath: state.ashore.inputFile,
             outputPath: state.ashore.outputPath
         });
+
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
 
         if (result.success) {
             // Display results
@@ -328,6 +414,7 @@ async function compressFile() {
             document.getElementById('ashore-stat-encoded').textContent = formatBytes(result.encoded_size);
             document.getElementById('ashore-stat-ratio').textContent = `${result.compression_ratio}:1`;
             document.getElementById('ashore-stat-saved').textContent = `${result.space_saved_percent}%`;
+            document.getElementById('ashore-stat-original-chars').textContent = result.original_size.toLocaleString();
             document.getElementById('ashore-stat-chars').textContent = result.character_count.toLocaleString();
             document.getElementById('ashore-output-file').textContent = result.output_file;
 
@@ -337,6 +424,7 @@ async function compressFile() {
             throw new Error(result.error || 'Compression failed');
         }
     } catch (error) {
+        clearInterval(progressInterval);
         alert(`Compression Error: ${error.message}`);
         progressSection.style.display = 'none';
     } finally {
@@ -349,11 +437,23 @@ async function decompressFile() {
     const progressSection = document.getElementById('afloat-progress');
     const resultsSection = document.getElementById('afloat-results');
     const decompressBtn = document.getElementById('afloat-decompress-btn');
+    const progressFill = document.getElementById('afloat-progress-fill');
+    const progressText = document.getElementById('afloat-progress-text');
 
     // Show progress
     progressSection.style.display = 'block';
     resultsSection.style.display = 'none';
     decompressBtn.disabled = true;
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Processing...';
+
+    // Simulate progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        progressFill.style.width = `${progress}%`;
+    }, 100);
 
     try {
         const result = await window.vlf.decompressFile({
@@ -361,13 +461,17 @@ async function decompressFile() {
             outputPath: state.afloat.outputPath
         });
 
+        clearInterval(progressInterval);
+        progressFill.style.width = '100%';
+
         if (result.success) {
             // Display results
             document.getElementById('afloat-stat-encoded').textContent = formatBytes(result.encoded_size);
             document.getElementById('afloat-stat-compressed').textContent = formatBytes(result.compressed_size);
             document.getElementById('afloat-stat-decompressed').textContent = formatBytes(result.decompressed_size);
             document.getElementById('afloat-stat-ratio').textContent = `${result.compression_ratio}:1`;
-            document.getElementById('afloat-stat-chars').textContent = result.character_count.toLocaleString();
+            document.getElementById('afloat-stat-compressed-chars').textContent = result.encoded_size.toLocaleString();
+            document.getElementById('afloat-stat-chars').textContent = result.decompressed_size.toLocaleString();
             document.getElementById('afloat-output-file').textContent = result.output_file;
 
             progressSection.style.display = 'none';
@@ -376,6 +480,7 @@ async function decompressFile() {
             throw new Error(result.error || 'Decompression failed');
         }
     } catch (error) {
+        clearInterval(progressInterval);
         alert(`Decompression Error: ${error.message}`);
         progressSection.style.display = 'none';
     } finally {
@@ -392,4 +497,26 @@ function formatBytes(bytes) {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Credits modal
+function setupCreditsModal() {
+    const creditsBtn = document.getElementById('credits-btn');
+    const creditsModal = document.getElementById('credits-modal');
+    const closeCredits = document.getElementById('close-credits');
+
+    creditsBtn.addEventListener('click', () => {
+        creditsModal.classList.add('show');
+    });
+
+    closeCredits.addEventListener('click', () => {
+        creditsModal.classList.remove('show');
+    });
+
+    // Close modal when clicking outside
+    creditsModal.addEventListener('click', (e) => {
+        if (e.target === creditsModal) {
+            creditsModal.classList.remove('show');
+        }
+    });
 }

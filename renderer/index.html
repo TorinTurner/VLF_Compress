@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
-    <title>VLF Compress</title>
+    <title>GENTEXT Compress</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,18 +13,20 @@
         <header class="app-header">
             <div class="header-content">
                 <h1 class="app-title">
-                    <span class="title-icon">📡</span>
-                    VLF Compress
+                    GENTEXT Compress
                 </h1>
-                <p class="app-subtitle">File Compression for VLF Communication</p>
+                <p class="app-subtitle">Efficient Message Compression</p>
             </div>
-            <div class="mode-toggle">
-                <button id="ashore-btn" class="mode-btn active" data-mode="ashore">
-                    ▲ Ashore
-                </button>
-                <button id="afloat-btn" class="mode-btn" data-mode="afloat">
-                    ▼ Afloat
-                </button>
+            <div class="header-right">
+                <div class="mode-toggle">
+                    <button id="ashore-btn" class="mode-btn active" data-mode="ashore">
+                        ▲ Ashore
+                    </button>
+                    <button id="afloat-btn" class="mode-btn" data-mode="afloat">
+                        ▼ Afloat
+                    </button>
+                </div>
+                <button class="icon-btn" id="credits-btn" title="Credits">!</button>
             </div>
         </header>
 
@@ -33,8 +35,8 @@
             <!-- Ashore Mode (Compress) -->
             <div id="ashore-mode" class="mode-content active">
                 <div class="mode-header">
-                    <h2>Compress Files</h2>
-                    <p>Compress files for VLF transmission using Brotli + Base32 encoding</p>
+                    <h2>Ashore</h2>
+                    <p>Prepare messages for transmission using Brotli + Base32 encoding</p>
                 </div>
 
                 <div class="workflow-section">
@@ -42,11 +44,10 @@
                     <div class="workflow-step">
                         <h3 class="step-title">
                             <span class="step-number">1</span>
-                            Select Input File
+                            Select Input File or Paste Text
                         </h3>
                         <div class="file-select-area" id="ashore-file-select">
                             <div class="file-select-content">
-                                <div class="file-icon">📄</div>
                                 <p class="file-select-text">Click to select file or drag and drop</p>
                                 <button class="btn btn-secondary" id="ashore-browse-btn">Browse Files</button>
                             </div>
@@ -55,8 +56,23 @@
                                     <span class="file-name" id="ashore-file-name"></span>
                                     <span class="file-size" id="ashore-file-size"></span>
                                 </div>
-                                <button class="btn-icon" id="ashore-clear-file" title="Clear">✕</button>
+                                <button class="btn-icon" id="ashore-clear-file" title="Clear">×</button>
                             </div>
+                        </div>
+
+                        <div class="divider">
+                            <span>OR</span>
+                        </div>
+
+                        <div class="paste-section">
+                            <label for="ashore-paste-text" class="paste-label">Paste text to encode:</label>
+                            <textarea
+                                id="ashore-paste-text"
+                                class="paste-textarea"
+                                placeholder="Paste your text here..."
+                                rows="5"
+                            ></textarea>
+                            <button class="btn btn-secondary" id="ashore-use-paste-btn" disabled>Use Pasted Text</button>
                         </div>
                     </div>
 
@@ -76,25 +92,26 @@
                     <div class="workflow-step">
                         <h3 class="step-title">
                             <span class="step-number">3</span>
-                            Compress
+                            Process
                         </h3>
                         <button class="btn btn-primary" id="ashore-compress-btn" disabled>
-                            <span class="btn-icon">⚡</span>
-                            Compress File
+                            Encode File
                         </button>
                     </div>
 
                     <!-- Progress -->
                     <div class="progress-section" id="ashore-progress" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="ashore-progress-fill"></div>
+                            </div>
+                            <div class="progress-text" id="ashore-progress-text">Processing...</div>
                         </div>
-                        <p class="progress-text">Compressing text...</p>
                     </div>
 
                     <!-- Results -->
                     <div class="results-section" id="ashore-results" style="display: none;">
-                        <h3 class="results-title">Compression Complete!</h3>
+                        <h3 class="results-title">Complete!</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-label">Original Size</div>
@@ -117,15 +134,22 @@
                                 <div class="stat-value" id="ashore-stat-saved">-</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-label">Character Count</div>
+                                <div class="stat-label">Original Character Count</div>
+                                <div class="stat-value" id="ashore-stat-original-chars">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Encoded Character Count</div>
                                 <div class="stat-value" id="ashore-stat-chars">-</div>
                             </div>
                         </div>
                         <div class="output-path">
                             <strong>Output:</strong> <span id="ashore-output-file">-</span>
                         </div>
+                        <div class="instruction-box">
+                            <p><strong>Next Step:</strong> Copy the encoded text and paste it into the GENTEXT/REMARKS field of your message.</p>
+                        </div>
                         <button class="btn btn-secondary" id="ashore-open-folder">
-                            📁 Open Folder
+                            Open Folder
                         </button>
                     </div>
                 </div>
@@ -134,8 +158,8 @@
             <!-- Afloat Mode (Decompress) -->
             <div id="afloat-mode" class="mode-content">
                 <div class="mode-header">
-                    <h2>Decompress Files</h2>
-                    <p>Decompress received VLF messages back to original files</p>
+                    <h2>Afloat</h2>
+                    <p>Restore received messages to original files</p>
                 </div>
 
                 <div class="workflow-section">
@@ -143,11 +167,10 @@
                     <div class="workflow-step">
                         <h3 class="step-title">
                             <span class="step-number">1</span>
-                            Select Encoded File
+                            Select Encoded File or Paste Text
                         </h3>
                         <div class="file-select-area" id="afloat-file-select">
                             <div class="file-select-content">
-                                <div class="file-icon">📨</div>
                                 <p class="file-select-text">Click to select encoded file or drag and drop</p>
                                 <button class="btn btn-secondary" id="afloat-browse-btn">Browse Files</button>
                             </div>
@@ -156,8 +179,23 @@
                                     <span class="file-name" id="afloat-file-name"></span>
                                     <span class="file-size" id="afloat-file-size"></span>
                                 </div>
-                                <button class="btn-icon" id="afloat-clear-file" title="Clear">✕</button>
+                                <button class="btn-icon" id="afloat-clear-file" title="Clear">×</button>
                             </div>
+                        </div>
+
+                        <div class="divider">
+                            <span>OR</span>
+                        </div>
+
+                        <div class="paste-section">
+                            <label for="afloat-paste-text" class="paste-label">Paste encoded text from GENTEXT/REMARKS:</label>
+                            <textarea
+                                id="afloat-paste-text"
+                                class="paste-textarea"
+                                placeholder="Paste your encoded text here..."
+                                rows="5"
+                            ></textarea>
+                            <button class="btn btn-secondary" id="afloat-use-paste-btn" disabled>Use Pasted Text</button>
                         </div>
                     </div>
 
@@ -177,25 +215,26 @@
                     <div class="workflow-step">
                         <h3 class="step-title">
                             <span class="step-number">3</span>
-                            Decompress
+                            Process
                         </h3>
                         <button class="btn btn-primary" id="afloat-decompress-btn" disabled>
-                            <span class="btn-icon">🔓</span>
-                            Decompress File
+                            Decode File
                         </button>
                     </div>
 
                     <!-- Progress -->
                     <div class="progress-section" id="afloat-progress" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="afloat-progress-fill"></div>
+                            </div>
+                            <div class="progress-text" id="afloat-progress-text">Processing...</div>
                         </div>
-                        <p class="progress-text">Decompressing...</p>
                     </div>
 
                     <!-- Results -->
                     <div class="results-section" id="afloat-results" style="display: none;">
-                        <h3 class="results-title">Decompression Complete!</h3>
+                        <h3 class="results-title">Complete!</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-label">Encoded Size</div>
@@ -214,7 +253,11 @@
                                 <div class="stat-value" id="afloat-stat-ratio">-</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-label">Character Count</div>
+                                <div class="stat-label">Compressed Character Count</div>
+                                <div class="stat-value" id="afloat-stat-compressed-chars">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Decompressed Character Count</div>
                                 <div class="stat-value" id="afloat-stat-chars">-</div>
                             </div>
                         </div>
@@ -222,17 +265,33 @@
                             <strong>Output:</strong> <span id="afloat-output-file">-</span>
                         </div>
                         <button class="btn btn-secondary" id="afloat-open-folder">
-                            📁 Open Folder
+                            Open Folder
                         </button>
                     </div>
                 </div>
             </div>
         </main>
+    </div>
 
-        <!-- Footer -->
-        <footer class="app-footer">
-            <p>VLF Compress v1.0.0 | Brotli Compression + Base32 Encoding</p>
-        </footer>
+    <!-- Credits Modal -->
+    <div id="credits-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Credits</h2>
+                <button class="modal-close" id="close-credits">×</button>
+            </div>
+            <div class="modal-body">
+                <h3>GENTEXT Compress</h3>
+                <p>Efficient Message Compression</p>
+                <br>
+                <p><strong>GUI/Program presented by:</strong></p>
+                <p>ITN1 Torin Turner / Elevated Engineering LLC</p>
+                <br>
+                <p><strong>Compression:</strong> Brotli + Base32 Encoding</p>
+                <br>
+                <p>This application provides efficient compression for message transmission systems.</p>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
